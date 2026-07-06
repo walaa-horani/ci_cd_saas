@@ -15,7 +15,12 @@
       "Bash(clerk env *)",
       "Bash(node -e \"const c=require\\('@clerk/nextjs'\\); ['Show','SignedIn','SignedOut','SignInButton','SignUpButton','UserButton'].forEach\\(n=>console.log\\(n, typeof c[n]!=='undefined'\\)\\)\")",
       "Bash(clerk doctor *)",
-      "Bash(curl -s http://localhost:3000/)"
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(npx --yes shadcn@latest add card --yes)",
+      "Bash(node -e \"console.log\\('lucide-react', require\\('lucide-react/package.json'\\).version\\)\")",
+      "Bash(git fetch *)"
     ]
   }
 }
