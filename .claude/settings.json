@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(git branch *)",
+      "Bash(npx prisma *)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(sed -i 's/`dev`/`develop`/g; s/shared `develop` branch/shared `develop` branch/g' skills.md)",
+      "Bash(grep -n 'develop\\\\|`dev`' skills.md)",
+      "Bash(netstat -ano)",
+      "Bash(clerk --help)",
+      "Bash(clerk init *)",
+      "Bash(clerk env *)",
+      "Bash(node -e \"const c=require\\('@clerk/nextjs'\\); ['Show','SignedIn','SignedOut','SignInButton','SignUpButton','UserButton'].forEach\\(n=>console.log\\(n, typeof c[n]!=='undefined'\\)\\)\")",
+      "Bash(clerk doctor *)",
+      "Bash(curl -s http://localhost:3000/)"
+    ]
+  }
+}
