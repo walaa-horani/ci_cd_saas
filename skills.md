@@ -37,18 +37,27 @@ This file exists to make sure the agent never skips that discipline, even if the
 3. **Stop immediately after the feature's code is complete.**
    Do not silently move on to another feature, another prompt, or another item from a list the user gave earlier — even if it seems like the "logical next step."
 
-4. **Ask the user to commit, push, and let CI run before merging to `develop`.**
+4. **Explain how to test the feature manually before asking to commit.**
+   After the feature's code is complete (and any automated checks pass), give the user clear, concrete steps to verify it **by hand** in the running app — not just "the tests pass." Include:
+   - how to get to it (e.g. start the dev server, the exact route/URL, or the command to run),
+   - any prerequisite state (signed in, an organization selected, a seeded record, an env var set),
+   - what to click or do, and
+   - the expected result that means it works.
+
+   Keep it short and specific to what changed. If the feature has no runtime surface a human can see (pure config, types), say so and explain how to confirm it another way.
+
+5. **Ask the user to commit, push, and let CI run before merging to `develop`.**
    Use a message close to this template:
 
-   > "The `<feature name>` feature is ready on branch `feature/<name>`. Please review the changes, then commit and push this branch so the CI pipeline can run. Once CI is green, merge it into `develop`. Let me know when that's done and I'll continue with the next feature."
+   > "The `<feature name>` feature is ready on branch `feature/<name>`. Here's how to test it manually: <steps>. Once you're happy, commit and push this branch so the CI pipeline can run. When CI is green, merge it into `develop`. Let me know when that's done and I'll continue with the next feature."
 
-5. **Do not create a new branch or start a new feature until the user confirms push + CI + merge to `develop`.**
+6. **Do not create a new branch or start a new feature until the user confirms push + CI + merge to `develop`.**
    Wait for a clear confirmation such as "done", "pushed", "merged", "CI passed", or similar. If the user says something else entirely, ask them directly whether the previous feature was pushed, passed CI, and merged into `develop`.
 
-6. **Never commit or push code yourself.**
+7. **Never commit or push code yourself.**
    Committing and pushing must always be a manual action by the user. This is intentional — it keeps the user in control of exactly what triggers the CI/CD pipeline, and reinforces the habit of reviewing a diff before pushing it.
 
-7. **If the user explicitly asks to skip this process** for a specific case (e.g. "just keep going, don't wait this time"), follow their instruction, but remind them once that this breaks the one-feature-per-branch rule for that specific change.
+8. **If the user explicitly asks to skip this process** for a specific case (e.g. "just keep going, don't wait this time"), follow their instruction, but remind them once that this breaks the one-feature-per-branch rule for that specific change.
 
 ## Why this matters
 
