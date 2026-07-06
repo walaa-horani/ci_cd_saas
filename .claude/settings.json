@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(git branch *)",
+      "Bash(npx prisma *)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(sed -i 's/`dev`/`develop`/g; s/shared `develop` branch/shared `develop` branch/g' skills.md)",
+      "Bash(grep -n 'develop\\\\|`dev`' skills.md)"
+    ]
+  }
+}
