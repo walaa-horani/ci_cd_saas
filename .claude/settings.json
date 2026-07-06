@@ -20,7 +20,10 @@
       "Bash(git stash *)",
       "Bash(npx --yes shadcn@latest add card --yes)",
       "Bash(node -e \"console.log\\('lucide-react', require\\('lucide-react/package.json'\\).version\\)\")",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(clerk enable *)",
+      "Bash(node -e \"const c=require\\('@clerk/nextjs'\\); ['OrganizationSwitcher','CreateOrganization','OrganizationProfile','OrganizationList'].forEach\\(n=>console.log\\(n, typeof c[n] !== 'undefined'\\)\\)\")",
+      "Bash(git ls-tree *)"
     ]
   }
 }
