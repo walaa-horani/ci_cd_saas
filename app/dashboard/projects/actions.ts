@@ -3,6 +3,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { isOrgAdmin } from "@/lib/permissions";
 
 // Resolve the signed-in user's *current* organization to a local DB row.
 // Returns null when there is no active organization. Lazily upserts the org
@@ -31,6 +32,9 @@ async function getCurrentOrg() {
 }
 
 export async function createProject(formData: FormData) {
+  // Only ADMINs may create projects.
+  if (!(await isOrgAdmin())) return;
+
   const org = await getCurrentOrg();
   if (!org) return;
 
@@ -60,6 +64,9 @@ export async function renameProject(formData: FormData) {
 }
 
 export async function deleteProject(formData: FormData) {
+  // Only ADMINs may delete projects.
+  if (!(await isOrgAdmin())) return;
+
   const org = await getCurrentOrg();
   if (!org) return;
 

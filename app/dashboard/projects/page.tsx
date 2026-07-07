@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { isOrgAdmin } from "@/lib/permissions";
 import { createProject } from "./actions";
 import { ProjectActions } from "./project-actions";
 
@@ -27,6 +28,7 @@ export default async function ProjectsPage() {
     );
   }
 
+  const admin = await isOrgAdmin();
   const org = await prisma.organization.findUnique({
     where: { clerkOrgId: orgId },
   });
@@ -46,17 +48,23 @@ export default async function ProjectsPage() {
         </Button>
       </div>
 
-      {/* Create */}
-      <form action={createProject} className="mt-6 flex gap-2">
-        <Input
-          name="name"
-          placeholder="New project name"
-          required
-          maxLength={100}
-          aria-label="New project name"
-        />
-        <Button type="submit">Add project</Button>
-      </form>
+      {/* Create — ADMIN only */}
+      {admin ? (
+        <form action={createProject} className="mt-6 flex gap-2">
+          <Input
+            name="name"
+            placeholder="New project name"
+            required
+            maxLength={100}
+            aria-label="New project name"
+          />
+          <Button type="submit">Add project</Button>
+        </form>
+      ) : (
+        <p className="mt-6 text-sm text-muted-foreground">
+          Only organization admins can create or delete projects.
+        </p>
+      )}
 
       {/* List */}
       <div className="mt-8 flex flex-col gap-3">
@@ -76,7 +84,11 @@ export default async function ProjectsPage() {
                     {project.name}
                   </Link>
                 </CardTitle>
-                <ProjectActions id={project.id} name={project.name} />
+                <ProjectActions
+                  id={project.id}
+                  name={project.name}
+                  canDelete={admin}
+                />
               </CardHeader>
             </Card>
           ))
