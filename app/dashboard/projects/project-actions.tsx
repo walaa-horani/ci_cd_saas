@@ -26,7 +26,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { renameProject, deleteProject } from "./actions";
 
-export function ProjectActions({ id, name }: { id: string; name: string }) {
+export function ProjectActions({
+  id,
+  name,
+  canDelete,
+}: {
+  id: string;
+  name: string;
+  canDelete: boolean;
+}) {
   const [renameOpen, setRenameOpen] = useState(false);
 
   return (
@@ -73,29 +81,32 @@ export function ProjectActions({ id, name }: { id: string; name: string }) {
       </Dialog>
 
       {/* Delete */}
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">
-            Delete
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete “{name}”?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This permanently deletes the project and all of its tasks. This
-              cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <form action={deleteProject}>
-              <input type="hidden" name="id" value={id} />
-              <AlertDialogAction type="submit">Delete</AlertDialogAction>
-            </form>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Delete — ADMIN only */}
+      {canDelete && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm">
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete “{name}”?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This permanently deletes the project and all of its tasks. This
+                cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <form action={deleteProject}>
+                <input type="hidden" name="id" value={id} />
+                <AlertDialogAction type="submit">Delete</AlertDialogAction>
+              </form>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

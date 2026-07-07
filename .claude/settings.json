@@ -26,7 +26,8 @@
       "Bash(git ls-tree *)",
       "Bash(npx --yes shadcn@latest add input label dialog alert-dialog --yes)",
       "Bash(npx --yes shadcn@latest add select --yes)",
-      "Bash(node -e \"const c=require\\('./lib/generated/prisma/client'\\); console.log\\('TaskStatus:', c.TaskStatus\\)\")"
+      "Bash(node -e \"const c=require\\('./lib/generated/prisma/client'\\); console.log\\('TaskStatus:', c.TaskStatus\\)\")",
+      "Bash(curl -s -o /dev/null -w \"home:%{http_code}\\\\n\" http://localhost:3000/)"
     ]
   }
 }
