@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   return (
@@ -26,6 +27,9 @@ export default function DashboardPage() {
           Use the organization switcher above to create a new organization or
           switch between the ones you belong to.
         </p>
+        <Button asChild className="mt-6">
+          <Link href="/dashboard/projects">Manage projects</Link>
+        </Button>
       </main>
     </div>
   );
