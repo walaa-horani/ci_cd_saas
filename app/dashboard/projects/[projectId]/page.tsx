@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { createTask } from "./actions";
+import { TaskCreateForm } from "./task-create-form";
 import { TaskItem } from "./task-item";
 
 type Status = "TODO" | "IN_PROGRESS" | "DONE";
@@ -47,17 +46,7 @@ export default async function ProjectTasksPage({
       </div>
 
       {/* Create */}
-      <form action={createTask} className="mt-6 flex gap-2">
-        <input type="hidden" name="projectId" value={project.id} />
-        <Input
-          name="title"
-          placeholder="New task title"
-          required
-          maxLength={200}
-          aria-label="New task title"
-        />
-        <Button type="submit">Add task</Button>
-      </form>
+      <TaskCreateForm projectId={project.id} />
 
       {/* Board grouped by status */}
       <div className="mt-8 grid gap-6 md:grid-cols-3">
