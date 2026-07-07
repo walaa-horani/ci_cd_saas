@@ -69,7 +69,12 @@ export default async function ProjectsPage() {
             <Card key={project.id}>
               <CardHeader className="flex flex-row items-center justify-between gap-4">
                 <CardTitle className="text-base font-medium">
-                  {project.name}
+                  <Link
+                    href={`/dashboard/projects/${project.id}`}
+                    className="hover:underline"
+                  >
+                    {project.name}
+                  </Link>
                 </CardTitle>
                 <ProjectActions id={project.id} name={project.name} />
               </CardHeader>
