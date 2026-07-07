@@ -2,10 +2,9 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { isOrgAdmin } from "@/lib/permissions";
-import { createProject } from "./actions";
+import { ProjectCreateForm } from "./project-create-form";
 import { ProjectActions } from "./project-actions";
 
 export default async function ProjectsPage() {
@@ -50,16 +49,7 @@ export default async function ProjectsPage() {
 
       {/* Create — ADMIN only */}
       {admin ? (
-        <form action={createProject} className="mt-6 flex gap-2">
-          <Input
-            name="name"
-            placeholder="New project name"
-            required
-            maxLength={100}
-            aria-label="New project name"
-          />
-          <Button type="submit">Add project</Button>
-        </form>
+        <ProjectCreateForm />
       ) : (
         <p className="mt-6 text-sm text-muted-foreground">
           Only organization admins can create or delete projects.

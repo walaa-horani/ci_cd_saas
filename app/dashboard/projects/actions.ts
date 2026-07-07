@@ -4,6 +4,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { isOrgAdmin } from "@/lib/permissions";
+import { PLAN_LIMITS, type ActionState } from "@/lib/plan-limits";
 
 // Resolve the signed-in user's *current* organization to a local DB row.
 // Returns null when there is no active organization. Lazily upserts the org
@@ -31,20 +32,40 @@ async function getCurrentOrg() {
   return org;
 }
 
-export async function createProject(formData: FormData) {
+export async function createProject(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   // Only ADMINs may create projects.
-  if (!(await isOrgAdmin())) return;
+  if (!(await isOrgAdmin())) {
+    return { error: "Only organization admins can create projects." };
+  }
 
   const org = await getCurrentOrg();
-  if (!org) return;
+  if (!org) return { error: "No active organization selected." };
 
   const name = String(formData.get("name") ?? "").trim();
-  if (!name) return;
+  if (!name) return { error: "Project name is required." };
+
+  // Enforce the plan's project limit (FREE is finite, PRO is Infinity).
+  const limit = PLAN_LIMITS[org.plan].projects;
+  if (Number.isFinite(limit)) {
+    const count = await prisma.project.count({
+      where: { organizationId: org.id },
+    });
+    if (count >= limit) {
+      return {
+        error: `Your ${org.plan} plan is limited to ${limit} projects. Upgrade to Pro for unlimited projects.`,
+        upgrade: true,
+      };
+    }
+  }
 
   await prisma.project.create({
     data: { name, organizationId: org.id },
   });
   revalidatePath("/dashboard/projects");
+  return {};
 }
 
 export async function renameProject(formData: FormData) {

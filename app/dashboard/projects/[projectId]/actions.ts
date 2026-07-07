@@ -4,35 +4,51 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { TaskStatus } from "@/lib/generated/prisma/enums";
+import { PLAN_LIMITS, type ActionState } from "@/lib/plan-limits";
 
-// Local id of the signed-in user's current organization, or null.
-async function getOrgId() {
+// The signed-in user's current organization (id + plan), or null.
+async function getCurrentOrg() {
   const { userId, orgId } = await auth();
   if (!userId || !orgId) return null;
-  const org = await prisma.organization.findUnique({
+  return prisma.organization.findUnique({
     where: { clerkOrgId: orgId },
-    select: { id: true },
+    select: { id: true, plan: true },
   });
-  return org?.id ?? null;
 }
 
-export async function createTask(formData: FormData) {
-  const organizationId = await getOrgId();
-  if (!organizationId) return;
+export async function createTask(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const org = await getCurrentOrg();
+  if (!org) return { error: "No active organization selected." };
 
   const projectId = String(formData.get("projectId") ?? "");
   const title = String(formData.get("title") ?? "").trim();
-  if (!projectId || !title) return;
+  if (!projectId || !title) return { error: "Task title is required." };
 
   // The parent project must belong to the current org.
   const project = await prisma.project.findFirst({
-    where: { id: projectId, organizationId },
+    where: { id: projectId, organizationId: org.id },
     select: { id: true },
   });
-  if (!project) return;
+  if (!project) return { error: "Project not found." };
+
+  // Enforce the plan's per-project task limit.
+  const limit = PLAN_LIMITS[org.plan].tasksPerProject;
+  if (Number.isFinite(limit)) {
+    const count = await prisma.task.count({ where: { projectId } });
+    if (count >= limit) {
+      return {
+        error: `Your ${org.plan} plan is limited to ${limit} tasks per project. Upgrade to Pro for unlimited tasks.`,
+        upgrade: true,
+      };
+    }
+  }
 
   await prisma.task.create({ data: { title, projectId } });
   revalidatePath(`/dashboard/projects/${projectId}`);
+  return {};
 }
 
 export async function updateTaskStatus(
@@ -40,28 +56,28 @@ export async function updateTaskStatus(
   status: string,
   projectId: string,
 ) {
-  const organizationId = await getOrgId();
-  if (!organizationId) return;
+  const org = await getCurrentOrg();
+  if (!org) return;
   if (!(Object.values(TaskStatus) as string[]).includes(status)) return;
 
   // Scoped through the task's project to the current org.
   await prisma.task.updateMany({
-    where: { id: taskId, project: { organizationId } },
+    where: { id: taskId, project: { organizationId: org.id } },
     data: { status: status as TaskStatus },
   });
   revalidatePath(`/dashboard/projects/${projectId}`);
 }
 
 export async function deleteTask(formData: FormData) {
-  const organizationId = await getOrgId();
-  if (!organizationId) return;
+  const org = await getCurrentOrg();
+  if (!org) return;
 
   const taskId = String(formData.get("taskId") ?? "");
   const projectId = String(formData.get("projectId") ?? "");
   if (!taskId) return;
 
   await prisma.task.deleteMany({
-    where: { id: taskId, project: { organizationId } },
+    where: { id: taskId, project: { organizationId: org.id } },
   });
   revalidatePath(`/dashboard/projects/${projectId}`);
 }
