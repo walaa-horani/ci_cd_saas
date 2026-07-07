@@ -120,6 +120,31 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      case "subscription.created":
+      case "subscription.updated":
+      case "subscription.active":
+      case "subscription.pastDue": {
+        const data = evt.data;
+        const clerkOrgId = data.payer?.organization_id;
+        // Only sync organization subscriptions (ignore user-payer ones).
+        if (!clerkOrgId) break;
+
+        // PRO when the subscription is active and has an active non-default
+        // (i.e. paid) plan item; otherwise fall back to FREE.
+        const isPro =
+          data.status === "active" &&
+          data.items.some(
+            (item) =>
+              item.status === "active" && item.plan && !item.plan.is_default,
+          );
+
+        await prisma.organization.updateMany({
+          where: { clerkOrgId },
+          data: { plan: isPro ? "PRO" : "FREE" },
+        });
+        break;
+      }
+
       default:
         // Unhandled event type — acknowledge so Clerk doesn't retry.
         break;
