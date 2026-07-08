@@ -8,7 +8,7 @@ export default function DashboardPage() {
       {/* Top bar */}
       <header className="flex w-full items-center justify-between border-b px-6 py-4">
         <Link href="/dashboard" className="text-lg font-semibold tracking-tight">
-          Tasky
+          Tasks
         </Link>
         <div className="flex items-center gap-4">
           <OrganizationSwitcher
