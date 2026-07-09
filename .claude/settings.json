@@ -27,7 +27,9 @@
       "Bash(npx --yes shadcn@latest add input label dialog alert-dialog --yes)",
       "Bash(npx --yes shadcn@latest add select --yes)",
       "Bash(node -e \"const c=require\\('./lib/generated/prisma/client'\\); console.log\\('TaskStatus:', c.TaskStatus\\)\")",
-      "Bash(curl -s -o /dev/null -w \"home:%{http_code}\\\\n\" http://localhost:3000/)"
+      "Bash(curl -s -o /dev/null -w \"home:%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(grep -rniA3 \"PricingTableProps\" node_modules/@clerk/types/dist/index.d.ts)",
+      "Bash(grep -rniB1 -A12 \"PricingTableProps\\\\b\" node_modules/@clerk/types/dist/index.d.ts)"
     ]
   }
 }
