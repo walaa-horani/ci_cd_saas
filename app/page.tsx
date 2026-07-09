@@ -30,13 +30,13 @@ const features = [
   },
   {
     icon: FolderKanban,
-    title: "Projects",
+    title: "Project",
     description:
       "Organize work into projects, each with its own focused set of tasks.",
   },
   {
     icon: ListChecks,
-    title: "Tasks",
+    title: "Task",
     description:
       "Move tasks through To Do, In Progress, and Done to keep work flowing.",
   },
@@ -50,7 +50,7 @@ const features = [
 
 const plans = [
   {
-    name: "Free",
+    name: "Fre",
     price: "$0",
     period: "forever",
     description: "Everything you need to get a small team started.",
