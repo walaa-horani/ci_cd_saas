@@ -26,7 +26,7 @@ const features = [
     icon: Building2,
     title: "Organizations",
     description:
-      "Group your team into a shared workspace and manage everything in one place.",
+      " workspace and manage everything in one place.",
   },
   {
     icon: FolderKanban,
